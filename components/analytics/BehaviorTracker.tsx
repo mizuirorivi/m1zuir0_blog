@@ -217,7 +217,7 @@ export function useBehaviorTracker() {
   }, [])
 
   const track = useCallback(
-    (type: BehaviorType, element?: string, metadata?: Record<string, any>) => {
+    (type: BehaviorType, element?: string, metadata?: Record<string, unknown>) => {
       if (trackerRef.current) {
         trackerRef.current.track({
           type,

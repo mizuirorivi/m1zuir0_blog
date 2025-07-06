@@ -8,7 +8,7 @@ interface MetricsPayload {
     type: string
     value: string | number
     timestamp: number
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   }[]
 }
 

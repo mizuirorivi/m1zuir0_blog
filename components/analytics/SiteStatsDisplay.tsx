@@ -7,9 +7,23 @@ interface SiteStatsDisplayProps {
   showDetailed?: boolean
 }
 
+interface BloomFilterStats {
+  size: number
+  hashFunctions: number
+  setBits: number
+  fillRatio: number
+  estimatedFalsePositiveRate: number
+}
+
+interface BloomFilterStatsCollection {
+  visitors: BloomFilterStats
+  pageViews: BloomFilterStats
+  searches: BloomFilterStats
+}
+
 export default function SiteStatsDisplay({ showDetailed = false }: SiteStatsDisplayProps) {
   const [stats, setStats] = useState<SiteStats | null>(null)
-  const [bloomStats, setBloomStats] = useState<any>(null)
+  const [bloomStats, setBloomStats] = useState<BloomFilterStatsCollection | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -180,7 +194,7 @@ function StatCard({ title, value, icon }: { title: string; value: string; icon: 
   )
 }
 
-function BloomFilterStat({ title, stats }: { title: string; stats: any }) {
+function BloomFilterStat({ title, stats }: { title: string; stats: BloomFilterStats }) {
   return (
     <div className="rounded-md bg-gray-50 p-4 dark:bg-gray-800">
       <h4 className="mb-2 text-sm font-medium text-gray-900 dark:text-white">{title}</h4>

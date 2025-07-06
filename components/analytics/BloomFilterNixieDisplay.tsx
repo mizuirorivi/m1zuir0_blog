@@ -12,15 +12,16 @@ export default function BloomFilterNixieDisplay() {
       try {
         const tracker = new SiteMetricsTracker()
         const bloomStats = tracker.getBloomFilterStats()
-        
+
         // Calculate overall ratio (0-1)
         const overall = Math.min(
-          (bloomStats.visitors.fillRatio + 
-           bloomStats.pageViews.fillRatio + 
-           bloomStats.searches.fillRatio) / 3,
+          (bloomStats.visitors.fillRatio +
+            bloomStats.pageViews.fillRatio +
+            bloomStats.searches.fillRatio) /
+            3,
           1
         )
-        
+
         setOverallRatio(overall)
       } catch (error) {
         console.error('Failed to fetch bloom filter stats:', error)
@@ -29,10 +30,10 @@ export default function BloomFilterNixieDisplay() {
 
     // Initial update
     updateRatio()
-    
+
     // Update every 5 seconds
     const interval = setInterval(updateRatio, 5000)
-    
+
     return () => clearInterval(interval)
   }, [])
 

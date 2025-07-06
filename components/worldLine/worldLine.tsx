@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
 interface NixieTubeProps {
   digit: string
@@ -45,7 +45,7 @@ function NixieTube({ digit }: NixieTubeProps) {
 
   // 各数字をより縦長のドットパターンで定義（7x15のグリッド）
   const dotPatterns = {
-    "0": [
+    '0': [
       [0, 1, 1, 1, 1, 1, 0],
       [1, 1, 0, 0, 0, 1, 1],
       [1, 0, 0, 0, 0, 0, 1],
@@ -62,7 +62,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    "1": [
+    '1': [
       [0, 0, 1, 1, 0, 0, 0],
       [0, 1, 1, 1, 0, 0, 0],
       [0, 0, 0, 1, 0, 0, 0],
@@ -79,7 +79,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [0, 0, 0, 1, 0, 0, 0],
       [1, 1, 1, 1, 1, 1, 1],
     ],
-    "2": [
+    '2': [
       [0, 1, 1, 1, 1, 1, 0],
       [1, 1, 0, 0, 0, 1, 1],
       [0, 0, 0, 0, 0, 0, 1],
@@ -96,7 +96,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [1, 1, 1, 1, 1, 1, 1],
     ],
-    "3": [
+    '3': [
       [1, 1, 1, 1, 1, 1, 1],
       [0, 0, 0, 0, 0, 1, 1],
       [0, 0, 0, 0, 1, 1, 0],
@@ -113,7 +113,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    "4": [
+    '4': [
       [0, 0, 0, 0, 1, 1, 0],
       [0, 0, 0, 1, 1, 1, 0],
       [0, 0, 1, 1, 0, 1, 0],
@@ -130,7 +130,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [0, 0, 0, 0, 0, 1, 0],
       [0, 0, 0, 0, 0, 1, 0],
     ],
-    "5": [
+    '5': [
       [1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0],
       [1, 0, 0, 0, 0, 0, 0],
@@ -147,7 +147,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    "6": [
+    '6': [
       [0, 0, 1, 1, 1, 1, 0],
       [0, 1, 1, 0, 0, 1, 1],
       [1, 1, 0, 0, 0, 0, 0],
@@ -164,7 +164,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    "7": [
+    '7': [
       [1, 1, 1, 1, 1, 1, 1],
       [0, 0, 0, 0, 0, 1, 1],
       [0, 0, 0, 0, 1, 1, 0],
@@ -181,7 +181,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 0, 0, 0, 0, 0, 0],
       [1, 0, 0, 0, 0, 0, 0],
     ],
-    "8": [
+    '8': [
       [0, 1, 1, 1, 1, 1, 0],
       [1, 1, 0, 0, 0, 1, 1],
       [1, 0, 0, 0, 0, 0, 1],
@@ -198,7 +198,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    "9": [
+    '9': [
       [0, 1, 1, 1, 1, 1, 0],
       [1, 1, 0, 0, 0, 1, 1],
       [1, 0, 0, 0, 0, 0, 1],
@@ -215,7 +215,7 @@ function NixieTube({ digit }: NixieTubeProps) {
       [1, 1, 0, 0, 0, 1, 1],
       [0, 1, 1, 1, 1, 1, 0],
     ],
-    ".": [
+    '.': [
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0],
@@ -234,13 +234,13 @@ function NixieTube({ digit }: NixieTubeProps) {
     ],
   }
 
-  const pattern = dotPatterns[digit as keyof typeof dotPatterns] || dotPatterns["0"]
+  const pattern = dotPatterns[digit as keyof typeof dotPatterns] || dotPatterns['0']
 
   return (
-    <div className="relative w-16 h-48 mx-0.5">
+    <div className="relative mx-0.5 h-48 w-16">
       {/* ガラス管本体 - 強化されたレトロ感 */}
       <div
-        className="absolute top-0 left-0 right-0 bottom-8 overflow-hidden"
+        className="absolute top-0 right-0 bottom-8 left-0 overflow-hidden"
         style={{
           background: `
             linear-gradient(135deg, 
@@ -253,8 +253,8 @@ function NixieTube({ digit }: NixieTubeProps) {
               rgba(10, 5, 2, 0.99) 100%
             )
           `,
-          borderRadius: "32px 32px 8px 8px",
-          border: "1px solid rgba(50, 25, 12, 0.8)",
+          borderRadius: '32px 32px 8px 8px',
+          border: '1px solid rgba(50, 25, 12, 0.8)',
           boxShadow: `
             inset 0 0 35px rgba(0, 0, 0, 0.95),
             inset 3px 3px 15px rgba(60, 30, 15, 0.5),
@@ -277,7 +277,7 @@ function NixieTube({ digit }: NixieTubeProps) {
               linear-gradient(-35deg, transparent 70%, rgba(45, 25, 15, 0.4) 80%, transparent 90%),
               linear-gradient(125deg, transparent 65%, rgba(40, 20, 12, 0.4) 78%, transparent 88%)
             `,
-            borderRadius: "32px 32px 8px 8px",
+            borderRadius: '32px 32px 8px 8px',
           }}
         />
 
@@ -301,7 +301,7 @@ function NixieTube({ digit }: NixieTubeProps) {
                 rgba(70, 45, 25, 0.08) 6px
               )
             `,
-            borderRadius: "32px 32px 8px 8px",
+            borderRadius: '32px 32px 8px 8px',
           }}
         />
 
@@ -309,8 +309,9 @@ function NixieTube({ digit }: NixieTubeProps) {
         <div
           className="absolute inset-1"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(5, 2, 1, 0.99) 0%, rgba(2, 1, 0, 0.995) 100%)",
-            borderRadius: "30px 30px 6px 6px",
+            background:
+              'radial-gradient(ellipse at center, rgba(5, 2, 1, 0.99) 0%, rgba(2, 1, 0, 0.995) 100%)',
+            borderRadius: '30px 30px 6px 6px',
           }}
         />
 
@@ -318,7 +319,7 @@ function NixieTube({ digit }: NixieTubeProps) {
         {showLightning && (
           <div className="absolute inset-2 top-2 bottom-8 overflow-hidden">
             <div
-              className="absolute w-full h-1"
+              className="absolute h-1 w-full"
               style={{
                 top: `${lightningPosition}%`,
                 background: `linear-gradient(to right,
@@ -349,7 +350,7 @@ function NixieTube({ digit }: NixieTubeProps) {
                   0 0 16px rgba(255, 220, 120, 0.4),
                   0 0 24px rgba(255, 180, 80, 0.2)
                 `,
-                filter: "blur(0.3px)",
+                filter: 'blur(0.3px)',
                 opacity: 0.8,
               }}
             />
@@ -365,7 +366,7 @@ function NixieTube({ digit }: NixieTubeProps) {
               className="absolute h-full w-px"
               style={{
                 left: `${i * 10}%`,
-                background: "rgba(80, 50, 25, 0.4)",
+                background: 'rgba(80, 50, 25, 0.4)',
                 opacity: Math.random() > 0.3 ? 0.2 : 0.05, // ランダムに薄くなる
               }}
             />
@@ -374,10 +375,10 @@ function NixieTube({ digit }: NixieTubeProps) {
           {Array.from({ length: 15 }).map((_, i) => (
             <div
               key={`h${i}`}
-              className="absolute w-full h-px"
+              className="absolute h-px w-full"
               style={{
                 top: `${i * 6.67}%`,
-                background: "rgba(80, 50, 25, 0.4)",
+                background: 'rgba(80, 50, 25, 0.4)',
                 opacity: Math.random() > 0.3 ? 0.2 : 0.05, // ランダムに薄くなる
               }}
             />
@@ -386,37 +387,39 @@ function NixieTube({ digit }: NixieTubeProps) {
 
         {/* レトロなガラス表面の反射 - より控えめ */}
         <div
-          className="absolute top-10 left-1/4 w-1 h-8 opacity-10"
+          className="absolute top-10 left-1/4 h-8 w-1 opacity-10"
           style={{
-            background: "radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 70%)",
-            borderRadius: "50%",
+            background:
+              'radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 70%)',
+            borderRadius: '50%',
           }}
         />
 
         {/* 古い感じの側面反射 */}
         <div
-          className="absolute top-16 left-0.5 w-0.5 h-16 opacity-8"
+          className="absolute top-16 left-0.5 h-16 w-0.5 opacity-8"
           style={{
-            background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, transparent 100%)",
-            filter: "blur(1px)",
-            borderRadius: "50%",
+            background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, transparent 100%)',
+            filter: 'blur(1px)',
+            borderRadius: '50%',
           }}
         />
       </div>
 
       {/* 筒の底から少し浮かせたドット状数字表示 */}
-      <div className="absolute bottom-20 left-0 right-0 flex justify-center">
+      <div className="absolute right-0 bottom-20 left-0 flex justify-center">
         <div
           className="relative"
           style={{
-            width: "28px",
-            height: "75px",
+            width: '28px',
+            height: '75px',
             transform: `translateX(${glitchOffset}px)`, // 壊れた地デジ感
           }}
         >
           {pattern.map((row, rowIndex) =>
             row.map((dot, colIndex) => {
-              const flickerIntensity = Math.sin((animationOffset + rowIndex * 3 + colIndex * 2) * 0.15) * 0.08
+              const flickerIntensity =
+                Math.sin((animationOffset + rowIndex * 3 + colIndex * 2) * 0.15) * 0.08
               const glitchFlicker = Math.random() < 0.02 ? Math.random() * 0.5 : 0 // 地デジグリッチ
               const rustEffect = Math.random() < 0.04 ? 0.25 : 0 // サビ感
               return (
@@ -426,15 +429,15 @@ function NixieTube({ digit }: NixieTubeProps) {
                   style={{
                     left: `${colIndex * 4}px`,
                     top: `${rowIndex * 5}px`,
-                    width: "2px",
-                    height: "3px",
+                    width: '2px',
+                    height: '3px',
                     background: dot
                       ? `rgba(160, 80, 30, ${0.8 + flickerIntensity - glitchFlicker - rustEffect})`
-                      : "rgba(30, 20, 10, 0.08)",
+                      : 'rgba(30, 20, 10, 0.08)',
                     boxShadow: dot
                       ? `0 0 1px rgba(160, 80, 30, ${0.6 + flickerIntensity}), 0 0 2px rgba(140, 70, 25, ${0.4 + flickerIntensity * 0.5})`
-                      : "none",
-                    borderRadius: "50%",
+                      : 'none',
+                    borderRadius: '50%',
                     opacity: dot
                       ? Math.random() > 0.015
                         ? 0.85 + flickerIntensity - glitchFlicker - rustEffect
@@ -443,14 +446,14 @@ function NixieTube({ digit }: NixieTubeProps) {
                   }}
                 />
               )
-            }),
+            })
           )}
         </div>
       </div>
 
       {/* 底部ベース - より古い感じ */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-8"
+        className="absolute right-0 bottom-0 left-0 h-8"
         style={{
           background: `
             linear-gradient(135deg,
@@ -461,8 +464,8 @@ function NixieTube({ digit }: NixieTubeProps) {
               rgba(0, 0, 0, 1) 100%
             )
           `,
-          borderRadius: "4px",
-          border: "1px solid rgba(25, 15, 10, 0.6)",
+          borderRadius: '4px',
+          border: '1px solid rgba(25, 15, 10, 0.6)',
           boxShadow: `
             inset 0 2px 4px rgba(30, 20, 15, 0.4),
             inset 0 -2px 4px rgba(0, 0, 0, 0.98)
@@ -471,10 +474,10 @@ function NixieTube({ digit }: NixieTubeProps) {
       >
         {/* ベース上部の金属リング - サビ感 */}
         <div
-          className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-1 opacity-25"
+          className="absolute top-0 left-1/2 h-1 w-12 -translate-x-1/2 transform opacity-25"
           style={{
-            background: "linear-gradient(135deg, rgba(40, 30, 25, 1) 0%, rgba(20, 15, 12, 1) 100%)",
-            borderRadius: "2px",
+            background: 'linear-gradient(135deg, rgba(40, 30, 25, 1) 0%, rgba(20, 15, 12, 1) 100%)',
+            borderRadius: '2px',
           }}
         />
 
@@ -488,7 +491,7 @@ function NixieTube({ digit }: NixieTubeProps) {
               radial-gradient(ellipse at 50% 90%, rgba(70, 45, 28, 0.3) 0%, transparent 20%),
               linear-gradient(45deg, transparent 70%, rgba(50, 30, 18, 0.3) 85%, transparent 95%)
             `,
-            borderRadius: "4px",
+            borderRadius: '4px',
           }}
         />
 
@@ -505,7 +508,7 @@ function NixieTube({ digit }: NixieTubeProps) {
                 rgba(70, 45, 25, 0.2) 2px
               )
             `,
-            borderRadius: "4px",
+            borderRadius: '4px',
           }}
         />
       </div>
@@ -522,12 +525,16 @@ export interface NixieTubeDisplayProps {
   className?: string
 }
 
-export function NixieTubeDisplay({ value = "0", maxDigits = 8, className = "" }: NixieTubeDisplayProps) {
+export function NixieTubeDisplay({
+  value = '0',
+  maxDigits = 8,
+  className = '',
+}: NixieTubeDisplayProps) {
   const displayValue = String(value).slice(0, maxDigits)
 
   return (
     <div className={`flex items-center justify-center ${className}`}>
-      {displayValue.split("").map((char, index) => (
+      {displayValue.split('').map((char, index) => (
         <NixieTube key={`${char}-${index}`} digit={char} />
       ))}
     </div>

@@ -1,6 +1,25 @@
 import { BloomFilter } from './BloomFilter'
 
 /**
+ * Session data structure for tracking user sessions
+ */
+interface SessionData {
+  duration: number
+  timestamp: number
+}
+
+/**
+ * Bloom filter statistics structure
+ */
+interface BloomFilterStats {
+  size: number
+  hashFunctions: number
+  setBits: number
+  fillRatio: number
+  estimatedFalsePositiveRate: number
+}
+
+/**
  * Site metrics that can be tracked
  */
 export type MetricType =
@@ -24,7 +43,7 @@ export interface MetricEntry {
   type: MetricType
   value: string | number
   timestamp: number
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -52,7 +71,7 @@ export class SiteMetricsTracker {
   private pageViewBloomFilter: BloomFilter
   private searchBloomFilter: BloomFilter
   private metricsMap: Map<string, number> = new Map()
-  private sessionStorage: Map<string, any> = new Map()
+  private sessionStorage: Map<string, SessionData> = new Map()
 
   constructor() {
     // Different bloom filters for different types of data
@@ -240,9 +259,9 @@ export class SiteMetricsTracker {
    * Get bloom filter statistics
    */
   getBloomFilterStats(): {
-    visitors: any
-    pageViews: any
-    searches: any
+    visitors: BloomFilterStats
+    pageViews: BloomFilterStats
+    searches: BloomFilterStats
   } {
     return {
       visitors: this.visitorBloomFilter.getStats(),
@@ -259,7 +278,7 @@ export class SiteMetricsTracker {
   }
 
   private extractPostSlug(url: string): string | null {
-    const match = url.match(/\/blog\/([^\/]+)/)
+    const match = url.match(/\/blog\/([^/]+)/)
     return match ? match[1] : null
   }
 
@@ -362,7 +381,15 @@ export class SiteMetricsTracker {
   /**
    * Export metrics for analytics
    */
-  exportMetrics(): any {
+  exportMetrics(): {
+    stats: SiteStats
+    bloomFilters: {
+      visitors: BloomFilterStats
+      pageViews: BloomFilterStats
+      searches: BloomFilterStats
+    }
+    rawMetrics: Record<string, number>
+  } {
     return {
       stats: this.getSiteStats(),
       bloomFilters: this.getBloomFilterStats(),

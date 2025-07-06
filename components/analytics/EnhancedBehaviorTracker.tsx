@@ -134,7 +134,7 @@ export default function EnhancedBehaviorTracker() {
     const tagLinks = document.querySelectorAll('a[href*="/tags/"]')
     tagLinks.forEach((link) => {
       const href = link.getAttribute('href')
-      const tagMatch = href?.match(/\/tags\/([^\/\?]+)/)
+      const tagMatch = href?.match(/\/tags\/([^/?]+)/)
       if (tagMatch) {
         metricsTrackerRef.current.trackTag(tagMatch[1])
       }
@@ -216,7 +216,7 @@ export default function EnhancedBehaviorTracker() {
       // Tag click
       const href = target.closest('a')?.href
       if (href) {
-        const tagMatch = href.match(/\/tags\/([^\/\?]+)/)
+        const tagMatch = href.match(/\/tags\/([^/?]+)/)
         if (tagMatch && metricsTrackerRef.current) {
           metricsTrackerRef.current.trackTag(tagMatch[1])
         }

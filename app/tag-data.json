@@ -1,12 +1,12 @@
 {
   "welcome": 2,
   "intro": 2,
+  "empty": 1,
   "libc": 1,
   "pathelf": 1,
   "linux": 1,
   "pwn": 1,
   "rev": 1,
-  "empty": 1,
   "diary": 1,
   "日記": 2,
   "哲学": 1

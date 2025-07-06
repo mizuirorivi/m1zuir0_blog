@@ -25,7 +25,7 @@ export interface BehaviorEvent {
   timestamp: number
   sessionId: string
   userId?: string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 }
 
 /**
@@ -168,7 +168,13 @@ export class BehaviorTracker {
     totalPatterns: number
     uniquePatterns: number
     commonPatterns: BehaviorPattern[]
-    bloomStats: any
+    bloomStats: {
+      size: number
+      hashFunctions: number
+      setBits: number
+      fillRatio: number
+      estimatedFalsePositiveRate: number
+    }
     sessionInfo: {
       sessionId: string
       userId?: string
