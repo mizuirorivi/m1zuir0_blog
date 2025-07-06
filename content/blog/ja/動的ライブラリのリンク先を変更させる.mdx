@@ -1,0 +1,232 @@
+---
+title: 動的ライブラリのリンク先を変更させる
+date: 2025/07/05
+tags:
+  - libc
+  - pathelf
+  - linux
+  - pwn
+  - rev
+draft: false
+summary:
+---
+
+この記事は備忘録であり、自分自身の実験に基づくものです。
+正確性を保証出来ません。（自分の環境では動きました。）
+（もし、間違っている点があれば指摘していただけると幸いです。）
+
+[やり方だけ参照するならこのリンクを踏んでください](##やり方)
+
+
+## 前提知識
+### ライブラリとは
+ライブラリとなんでしょうか？
+普段からプログラミングをしている方なら、外部からファイルを取り込むことは誰しもがやったことがあると思います。
+これから、低レイヤのライブラリの取り扱いについて語っていこうと思います。
+まずライブラリは２つの種類があります。
+* 静的ライブラリ
+* 動的ライブラリ（共有ライブラリ）
+
+Linux のバイナリは、コンパイルの時に ld に対して -static オプションが指定されていない限り、動的リンク (実行時リンク) が標準になります。
+#### それぞれの長所と短所
+静的ライブラリとリンクには、動的なライブラリとリンクと比較した場合、主に 3 つの問題に注意が必要です。
+* **静的ライブラリは自己依存性 (独立性) に優れていますが、適用性に劣る**。
+実行可能ファイルを静的にリンクすると、必要なライブラリルーチンは実行可能バイナリファイルの一部となります。
+しかし、静的にリンクすると、静的ライブラリルーチンを更新する必要が出てきた場合 リンクし、生成し直さなければ、更新されたライブラリを利用することができません。<br /><br />動的ライブラリを使用すれば、ライブラリは a.out ファイルの一部とはならず、リンクは実行時に行われます。更新された動的ライブラリを利用するために必要なことは、新しいライブラリをシステムにインストールするだけです。
+* **動的ライブラリは必要ない機能を実行時削げる為、最適化しやすい。**
+動的リンカにはLazy Bindingという仕組みがあります。
+実際に関数が呼ばれるまで、テーブルにはありますが、
+アドレス解決は行われません。つまり、ロードされないのです。
+こういった最適化は静的ライブラリではやりずらいことが多いです。
+* 静的ライブラリのリンクでは、リンクの順序が重要です。
+リンカーは、コマンド行に現れる順番、すなわち左から右に入力ファイルを処理します。リンカーがライブラリの要素を読み込むべきかどうかは、すでに処理されたライブラリの要素によって決定されます。この順番は、要素がライブラリファイル中で現れる順番に依存するだけでなく、コンパイルコマンド行上で指定されたライブラリの順番にも依存します。
+
+### ライブラリのロード、呼び出し法について
+まず、実行ファイルというのはそれ単体であることが少ないです。
+以下のよくあるc言語のチュートリアルを見てもらうとよく分かるのですが、なにかしら、ライブラリを含むことが多いです。
+ここでいうと```stdio.h```ですね。
+
+```c=
+#include<stdio.h>
+int main(){
+    printf("Hello World\n");
+}
+```
+
+これは、なにも```include```文がなかったら、ライブラリを含まないわけではありません。
+```c=
+int main(){}
+```
+上の何もしないソースコードにはライブラリはロードされるでしょうか？
+
+
+実はされるんです    
+
+```ldd```とはコマンドラインで指定された各プログラムまたは共有ライブラリに必要な共有ライブラリを出力するコマンドです。
+```ldd```を使って実際にどんなライブラリがロードされているか見てみましょう。
+
+```
+mizuiro@mizuiro-arch ~/PROJECTS> gcc test.c -o test
+mizuiro@mizuiro-arch ~/PROJECTS> ldd test
+	linux-vdso.so.1 (0x00007fffb94b4000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007fbf51b21000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007fbf51d63000)
+```
+
+はい、見に覚えのないライブラリがロードされていることが確認できます。おかしいですね。何もしないプラグラムなのに...
+
+```
+mizuiro@mizuiro-arch ~/PROJECTS> gcc test.c -o test
+mizuiro@mizuiro-arch ~/PROJECTS> ./test
+mizuiro@mizuiro-arch ~/PROJECTS> 
+```
+
+これは、実際にmain関数を呼ぶ場合はいくつかの処理を終えてから呼ばれるからです。
+![](https://i.imgur.com/vvLLOiY.png)
+
+main関数というのは```libc_start_main```関数の中で呼ばれます。（古いバージョン）
+この```libc_start_main```は動的ライブラリ（共有ライブラリ）で定義されています。
+### ldについて
+さて、ここで話が変わりますが、ldとはどういったものなのか詳しく説明していこうと思います。
+
+ld.so と ld-linux.so* はプログラムに必要な共有ライブラリを見つけてロードし、 プログラムの実行を準備してから起動させるものです。これがないと、実行させる際に動的にライブラリをロードさせてあげることが出来なくなるのです。
+## やり方
+動的ライブラリのリンク先を変更させる方法はいくつかあるようですが、ここではpatchelfを使った方法を使っていきます。
+まずは、patchをあてたい実行ファイルと動的ライブラリを用意します。今回はlibc2.27をあてることにします。
+次に対応するldを用意します。
+そうしたら、libcとldをルート直下のmylibにでも置いておきましょうか。
+
+```
+root@03a37eb13ba2:/mylib# ls -al
+total 2160
+drwxr-xr-x 2 root root    4096 Mar 22 22:03 .
+drwxr-xr-x 1 root root    4096 Mar 22 22:00 ..
+-rwxr-xr-x 1 root root  170960 Mar 22 22:03 ld-2.27.so
+-rwxr-xr-x 1 root root 2030544 Mar 22 22:03 libc-2.27.so
+```
+
+次に、実行ファイルを用意します。
+```
+root@03a37eb13ba2:/PROJECTS# ls
+test  test.c
+root@03a37eb13ba2:/PROJECTS# cat test.c
+#include<stdio.h>
+int main(){
+	printf("Hello World\n");
+	return 0;
+}
+```
+
+```
+root@03a37eb13ba2:/PROJECTS# ldd test
+	linux-vdso.so.1 (0x00007ffd6fba1000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f422b1c0000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f422b3bd000)
+```
+
+こいつのlibcのバージョンはいくつでしょうか。確認してみます。
+```
+oot@03a37eb13ba2:/PROJECTS# /lib/x86_64-linux-gnu/libc.so.6
+GNU C Library (Ubuntu GLIBC 2.31-0ubuntu9.7) stable release version 2.31.
+...
+```
+2.31だそうですね。それではこれが2.27になるようにしていきます。
+
+まずは、ライブラリの名前を合わせるために
+```libc.so.6```を```mylib```につくります。
+シンボリックリンクを貼ってあげましょう。
+```
+root@03a37eb13ba2:/mylib# ln -s ./libc-2.27.so ./libc.so.6
+root@03a37eb13ba2:/mylib# ls
+ld-2.27.so  libc-2.27.so  libc.so.6
+
+```
+これで用意を終わったのでコマンドを実行します。
+--set-rpathはライブラリのディレクトリを指します。
+--set-interpreterでldを指定してあげて、最後に実行ファイルを指定してあげれば良いです。
+```
+root@03a37eb13ba2:/PROJECTS# patchelf --set-rpath /mylib/ --set-interpreter /mylib/ld-2.27.so ./test        
+root@03a37eb13ba2:/PROJECTS# ldd test
+	linux-vdso.so.1 (0x00007ffe5dfe8000)
+	libc.so.6 => /mylib/libc.so.6 (0x00007f0caf2ed000)
+	/mylib/ld-2.27.so => /lib64/ld-linux-x86-64.so.2 (0x00007f0caf6e6000)
+root@03a37eb13ba2:/PROJECTS# ./test
+Hello World
+```
+どうやら、ちゃんとパッチを当てることができたようですね。
+一見落着(?)
+## libc-2.35での振る舞い（付録的なあれ）
+ちなみに、現在のmainは```__libc_start_call_main```で呼ばれます。(2.35)
+```
+mizuiro@mizuiro-arch ~/PROJECTS [1]> ldd test
+	linux-vdso.so.1 (0x00007ffe1b1eb000)
+	libc.so.6 => /usr/lib/libc.so.6 (0x00007f5a1eaa1000)
+	/lib64/ld-linux-x86-64.so.2 => /usr/lib64/ld-linux-x86-64.so.2 (0x00007f5a1ece3000)
+```
+```
+mizuiro@mizuiro-arch ~/PROJECTS> /usr/lib/libc.so.6
+GNU C Library (GNU libc) stable release version 2.35.
+...
+```
+```
+0x00007fffffffcc88│+0x0000: 0x00007ffff7db0310  →  <__libc_start_call_main+128> mov edi, eax	 ← $rsp
+0x00007fffffffcc90│+0x0008: 0x0000000000000000
+0x00007fffffffcc98│+0x0010: 0x0000555555555119  →  <main+0> push rbp
+0x00007fffffffcca0│+0x0018: 0x00000001ffffcd80
+0x00007fffffffcca8│+0x0020: 0x00007fffffffcd98  →  0x00007fffffffd17a  →  "/mnt/nvme0n1p7/test"
+0x00007fffffffccb0│+0x0028: 0x0000000000000000
+0x00007fffffffccb8│+0x0030: 0xd1bd3d699ca29e5e
+0x00007fffffffccc0│+0x0038: 0x00007fffffffcd98  →  0x00007fffffffd17a  →  "/mnt/nvme0n1p7/test"
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── code:x86:64 ────
+   0x55555555511a <main+1>         mov    rbp, rsp
+   0x55555555511d <main+4>         mov    eax, 0x0
+   0x555555555122 <main+9>         pop    rbp
+ → 0x555555555123 <main+10>        ret    
+   ↳  0x7ffff7db0310 <__libc_start_call_main+128> mov    edi, eax
+      0x7ffff7db0312 <__libc_start_call_main+130> call   0x7ffff7dc7d60 <exit>
+      0x7ffff7db0317 <__libc_start_call_main+135> call   0x7ffff7e0d660 <__nptl_deallocate_tsd>
+      0x7ffff7db031c <__libc_start_call_main+140> lock   dec DWORD PTR [rip+0x1ccda5]        # 0x7ffff7f7d0c8 <__nptl_nthreads>
+      0x7ffff7db0323 <__libc_start_call_main+147> sete   al
+      0x7ffff7db0326 <__libc_start_call_main+150> test   al, al
+
+```
+
+```<__libc_start_call_main+128> mov edi, eax```
+が```main```のリターンアドレスとしてあるので、
+その前の文が呼び出している部分でしょうか？
+```
+mizuiro@mizuiro-arch ~/PROJECTS> objdump -M intel -d /usr/lib/libc.so.6 | sed -n '/<__libc_start_call_main>:/,/^$/p'
+000000000002d290 <__libc_start_call_main>:
+   ...
+   2d30e:	ff d0                	call   rax
+   2d310:	89 c7                	mov    edi,eax
+   2d312:	e8 49 7a 01 00       	call   44d60 <exit>
+   2d317:	e8 44 d3 05 00       	call   8a660 <__GI___nptl_deallocate_tsd>
+   ...
+
+```
+```__libc_start_call_main```+128なので```2d310```の部分ですね。
+その直前が呼び出している部分です。```call   rax```と書いてありますが、慣例で```call rax``` of ```call eax```となるようです。もし、どこの部分でmainを呼んでいるのか確認したければ、
+これを目印にするとよさそうです。
+## めんどくさい人向け(pwn用)
+インタープリターの設定: 
+```
+patchelf --set-interpreter {ldfile_path} {filename}
+```
+libcの置換: 
+```
+patchelf --replace-needed libc.so.6 {libcfile_path} {filename}
+```
+## 動かない時,
+ldのパーミッション(755)は適正ですか？
+ldのグループと所有者は適正ですか？(どちらもroot)
+## 連絡先
+[@mizuiro_rivi](https://twitter.com/mizuiro_rivi)
+もし困ったときに、相談してくだされば、力になれるかもしれません。
+ぜひ連絡ください。
+また、間違った記述等あれば、こちらにお願いします。
+## Ref
+* [blackhat ret2csu(呼び出し方が載っています)](https://i.blackhat.com/briefings/asia/2018/asia-18-Marco-return-to-csu-a-new-method-to-bypass-the-64-bit-Linux-ASLR-wp.pdf)
+* [共有ライブラリ・静的ライブラリ・動的リンク・静的リンク検証](https://yuyubu-sub.hateblo.jp/entry/2019/11/21/link)
+* [静的ライブラリの長所と短所](https://docs.oracle.com/cd/E19205-01/820-1203/aeudm/index.html)
+* [動的ライブラリのLazyBindingについて](https://ropemporium.com/guide.html#Appendix%20A)

@@ -1,0 +1,362 @@
+@import 'tailwindcss';
+@import "tw-animate-css";
+@plugin "@tailwindcss/forms";
+@plugin '@tailwindcss/typography';
+@source '../node_modules/pliny';
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Core theme configuration */
+@theme {
+  /* Font families */
+  --font-sans: var(--font-arian-geralde), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* Colors */
+  /* Copied from https://tailwindcss.com/docs/theme#default-theme-variable-reference */
+  --color-primary-50: oklch(0.971 0.014 343.198);
+  --color-primary-100: oklch(0.948 0.028 342.258);
+  --color-primary-200: oklch(0.899 0.061 343.231);
+  --color-primary-300: oklch(0.823 0.12 346.018);
+  --color-primary-400: oklch(0.718 0.202 349.761);
+  --color-primary-500: oklch(0.656 0.241 354.308);
+  --color-primary-600: oklch(0.592 0.249 0.584);
+  --color-primary-700: oklch(0.525 0.223 3.958);
+  --color-primary-800: oklch(0.459 0.187 3.815);
+  --color-primary-900: oklch(0.408 0.153 2.432);
+  --color-primary-950: oklch(0.284 0.109 3.907);
+
+  --color-gray-50: oklch(0.985 0.002 247.839);
+  --color-gray-100: oklch(0.967 0.003 264.542);
+  --color-gray-200: oklch(0.928 0.006 264.531);
+  --color-gray-300: oklch(0.872 0.01 258.338);
+  --color-gray-400: oklch(0.707 0.022 261.325);
+  --color-gray-500: oklch(0.551 0.027 264.364);
+  --color-gray-600: oklch(0.446 0.03 256.802);
+  --color-gray-700: oklch(0.373 0.034 259.733);
+  --color-gray-800: oklch(0.278 0.033 256.848);
+  --color-gray-900: oklch(0.21 0.034 264.665);
+  --color-gray-950: oklch(0.13 0.028 261.692);
+
+  /* Line heights */
+  --line-height-11: 2.75rem;
+  --line-height-12: 3rem;
+  --line-height-13: 3.25rem;
+  --line-height-14: 3.5rem;
+
+  /* Z-index values */
+  --z-60: 60;
+  --z-70: 70;
+  --z-80: 80;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  a,
+  button {
+    outline-color: var(--color-primary-500);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid;
+    border-radius: var(--radius-sm);
+    outline-color: var(--color-primary-500);
+  }
+
+  /* Hacker terminal effects for dark mode */
+  .dark * {
+    font-family: var(--font-arian-geralde), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  }
+
+  .dark body {
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(0, 255, 65, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(0, 255, 65, 0.03) 0%, transparent 50%),
+      #0a0a0a;
+  }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+  }
+}
+
+@layer utilities {
+  .prose {
+    font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    & a {
+      color: var(--color-primary-500);
+      &:hover {
+        color: var(--color-primary-600);
+      }
+      & code {
+        color: var(--color-primary-400);
+        font-family: var(--font-dunkin-sans-bold), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      }
+    }
+    & :where(h1, h2) {
+      font-weight: 700;
+      letter-spacing: var(--tracking-tight);
+      font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    }
+    & h3 {
+      font-weight: 600;
+      font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    }
+    & :where(code):not(pre code) {
+      color: var(--color-indigo-500);
+      font-family: var(--font-dunkin-sans-bold), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+    }
+    & p, & li {
+      font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    }
+  }
+
+  .prose-invert {
+    font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    & a {
+      color: #00ff41;
+      &:hover {
+        color: #33ff66;
+      }
+      & code {
+        color: #00cc33;
+        background-color: #1a1a1a;
+        border: 1px solid #333333;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-family: var(--font-dunkin-sans-bold), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+      }
+    }
+    & :where(h1, h2, h3, h4, h5, h6) {
+      color: #00ff41;
+      text-shadow: 0 0 5px rgba(0, 255, 65, 0.3);
+      font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    }
+    & pre {
+      background-color: #0a0a0a !important;
+      border: 1px solid #00ff41;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.1);
+      font-family: var(--font-dunkin-sans-bold), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+    }
+    & code {
+      color: #00cc33;
+      font-family: var(--font-dunkin-sans-bold), 'Fira Code', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+    }
+    & p, & li {
+      font-family: var(--font-dunkin-sans-bold), ui-sans-serif, system-ui, sans-serif;
+    }
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+}
+
+.task-list-item::before {
+  @apply hidden;
+}
+
+.task-list-item {
+  @apply list-none;
+}
+
+.footnotes {
+  @apply mt-12 border-t border-gray-200 pt-8 dark:border-gray-700;
+}
+
+.data-footnote-backref {
+  @apply no-underline;
+}
+
+.csl-entry {
+  @apply my-5;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* https://stackoverflow.com/questions/61083813/how-to-avoid-internal-autofill-selected-style-to-be-applied */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}
+
+.katex-display {
+  overflow: auto hidden;
+}
+
+.content-header-link {
+  opacity: 0;
+  margin-left: -24px;
+  padding-right: 4px;
+}
+
+.content-header:hover .content-header-link,
+.content-header-link:hover {
+  opacity: 1;
+}
+
+.linkicon {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* Custom component colors */
+  --color-component-bg: var(--component-bg);
+  --color-component-border: var(--component-border);
+  /* Geist font variables */
+  --font-geist-sans: var(--font-sans);
+  --font-geist-mono: var(--font-mono);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #faf7f0;
+  --foreground: oklch(0.145 0 0);
+  --card: #f7f4f0;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Custom component colors */
+  --component-bg: #caf2ee;
+  --component-border: #b8e5e0;
+}
+
+.dark {
+  /* Hacker-style dark theme with terminal green accents */
+  --background: #0a0a0a;
+  --foreground: #00ff41;
+  --card: #111111;
+  --card-foreground: #00ff41;
+  --popover: #1a1a1a;
+  --popover-foreground: #00ff41;
+  --primary: #00ff41;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #00cc33;
+  --muted: #1a1a1a;
+  --muted-foreground: #33ff66;
+  --accent: #00cc33;
+  --accent-foreground: #000000;
+  --destructive: #ff0040;
+  --border: #333333;
+  --input: #1a1a1a;
+  --ring: #00ff41;
+  --chart-1: #00ff41;
+  --chart-2: #33ff66;
+  --chart-3: #00cc33;
+  --chart-4: #66ff99;
+  --chart-5: #99ffcc;
+  --sidebar: #111111;
+  --sidebar-foreground: #00ff41;
+  --sidebar-primary: #00ff41;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1a1a1a;
+  --sidebar-accent-foreground: #00cc33;
+  --sidebar-border: #333333;
+  --sidebar-ring: #00ff41;
+  
+  /* Custom component colors for hacker dark mode */
+  --component-bg: #1a1a1a;
+  --component-border: #00ff41;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    font-family: var(--font-arian-geralde), ui-sans-serif, system-ui, sans-serif;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-arian-geralde), ui-sans-serif, system-ui, sans-serif;
+  }
+}

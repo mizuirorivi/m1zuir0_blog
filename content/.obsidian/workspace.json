@@ -1,0 +1,204 @@
+{
+  "main": {
+    "id": "08545f4229ef9e3a",
+    "type": "split",
+    "children": [
+      {
+        "id": "fc2e25f0ecd8cbb1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0363c4802104fed6",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "217da82246cbc67b",
+    "type": "split",
+    "children": [
+      {
+        "id": "b501b3521c2385f8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb0449046c903f85",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a79a88ff002243ae",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "ef340f0a884c72f3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 451.5
+  },
+  "right": {
+    "id": "80646d3bda8aa290",
+    "type": "split",
+    "children": [
+      {
+        "id": "7ae0cccdd1cc1fe3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7bf4b2af949049e4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "blog/Untitled.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Untitled"
+            }
+          },
+          {
+            "id": "6f6397ab5ecb6997",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "blog/Untitled.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Untitled"
+            }
+          },
+          {
+            "id": "3700e99587d80fa3",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d7bca46192d15d0c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "blog/Untitled.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Untitled"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "templater-obsidian:Templater": false
+    }
+  },
+  "active": "0363c4802104fed6",
+  "lastOpenFiles": [
+    "blog/ja/動的ライブラリのリンク先を変更させる.mdx",
+    "blog/ja/日記/2025-07-06.mdx",
+    "authors/en/default.mdx",
+    "blog/ja/日記/2025-07-05.mdx",
+    "blog/ja/welcome.md",
+    "blog/ja/Untitled.md",
+    "blog/en/welcome.md",
+    "blog/ja/Unti.md",
+    "2023-01-01.md",
+    "blog/en/diary/2025-07-05.mdx",
+    "blog/en/日記/2025-07-05.mdx",
+    "blog/en/diary",
+    "blog/en/日記",
+    "templates/template_mdx.mdx",
+    "blog/en/Untitled.md",
+    "templates/template.mdx",
+    "templates/template.md",
+    "blog/ja/日記/2025-07-05.md",
+    "blog/ja/日記",
+    "blog/ja/動的ライブラリのリンク先を変更させる.md",
+    "blog/en/welcome-en.md",
+    "blog/welcome.md",
+    "blog/welcome-en.md",
+    "blog/Untitled.md",
+    "Untitled 2.canvas",
+    "Untitled.canvas",
+    "Untitled 1.canvas",
+    "blog/Unti.md",
+    "templates/blog-post.md",
+    "blog/2025-07-02.md",
+    "blog/Untitled 1.md",
+    "blog/Untitled.canvas",
+    "templates/UntitledUntitled.md"
+  ]
+}
